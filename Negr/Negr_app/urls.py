@@ -1,6 +1,5 @@
-from my_app import views
-from other_app.views import Home
-
-utlpatterns = [
-
-]
+from . import views
+from django.urls import path
+urlpatterns = [
+    path('', views.home, name='home'),
+   ]
