@@ -29,7 +29,7 @@ class Singers(models.Model):
 
 class Songs(models.Model):
     title = models.CharField(max_length=100)
-    year = models.DateField()
+    year = models.DateTimeField()
     poster = models.ImageField(upload_to='static/images')
     singer = models.ForeignKey(Singers, on_delete=models.CASCADE)
 
