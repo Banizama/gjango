@@ -21,4 +21,15 @@ class Users(models.Model):
     age = models.IntegerField()
 
 
+class Singers(models.Model):
+    name = models.CharField(max_length=30)
+    year = models.DateField()
+
+
+class Songs(models.Model):
+    title = models.CharField(max_length=100)
+    year = models.DateField()
+    poster = models.ImageField(upload_to='static/images')
+    singer = models.ForeignKey(Singers, on_delete=models.CASCADE)
+
 
