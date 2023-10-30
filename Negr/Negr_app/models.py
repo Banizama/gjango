@@ -22,15 +22,15 @@ class Users(models.Model):
     age = models.IntegerField()
 
 
-class Singers(models.Model):
+class Artist(models.Model):
     name = models.CharField(max_length=30)
     year = models.DateTimeField()
 
 
-class Songs(models.Model):
+class Albums(models.Model):
     title = models.CharField(max_length=100)
     year = models.DateTimeField()
     poster = models.ImageField(upload_to='static/images')
-    singer = models.ForeignKey(Singers, on_delete=models.CASCADE)
+    singer = models.ForeignKey(Artist, on_delete=models.CASCADE)
 
 
