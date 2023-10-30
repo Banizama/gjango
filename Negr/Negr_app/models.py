@@ -34,3 +34,17 @@ class Albums(models.Model):
     singer = models.ForeignKey(Artist, on_delete=models.CASCADE)
 
 
+class Instruments(models.Model):
+    name = models.CharField(max_length=60)
+
+
+class Musician(models.Model):
+    first_name = models.CharField(max_length=50)
+    second_name = models.CharField(max_length=100)
+    sex = models.CharField(max_length=6)
+    date_of_birth = models.DateTimeField()
+    country = models.ForeignKey(Country, on_delete=models.CASCADE)
+    instrument = models.ForeignKey(Instruments, on_delete=models.CASCADE)
+
+
+
