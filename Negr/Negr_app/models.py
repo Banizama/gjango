@@ -47,4 +47,16 @@ class Musician(models.Model):
     instrument = models.ForeignKey(Instruments, on_delete=models.CASCADE)
 
 
+class Directors(models.Model):
+    first_name = models.CharField(max_length=60)
+    second_name = models.CharField(max_length=60)
+    age = models.IntegerField()
+
+
+class Films(models.Model):
+    title = models.CharField(max_length=100)
+    year = models.DateField()
+    director = models.ForeignKey(Directors, on_delete=models.CASCADE)
+    genre = models.CharField(max_length=50)
+    # poster = models.ImageField()
 
