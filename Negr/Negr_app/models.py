@@ -60,3 +60,16 @@ class Films(models.Model):
     genre = models.CharField(max_length=50)
     # poster = models.ImageField()
 
+
+# class Cart(models.Model):
+
+
+
+class Admin(models.Model):
+    name = models.CharField(max_length=30)
+    email = models.EmailField(max_length=50)
+    password = models.CharField(max_length=30)
+    role = models.CharField(default='admin', max_length=5)
+
+
+
