@@ -61,8 +61,10 @@ class Films(models.Model):
     # poster = models.ImageField()
 
 
-# class Cart(models.Model):
-
+class Cart(models.Model):
+    product = models.CharField(max_length=100)
+    amount = models.IntegerField()
+    date = models.DateTimeField(auto_now_add=True)
 
 
 class Admin(models.Model):
