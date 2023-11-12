@@ -1,12 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Directors, Films
-from .forms import FilmForm1
+from .models import Directors, Films, Book
+from .forms import FilmForm1, BookForm, RegistrationForm, LoginForm
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
+
 
 def home(request):
-    names = ['Nazar', 'Sasha', "Olga"]
-    name = 'Bob'
-    context = {'name': name, 'title': 'Home', 'names': names}
+    user = request.user
+    context = {'username': user}
     return render(request, 'home.html', context)
 
 
@@ -51,3 +53,51 @@ def page3(request):
 def films(request):
     film = Films.objects.all()
     return render(request, 'films.html', {'films': film})
+
+
+def books(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            year = form.cleaned_data['year']
+            author = form.cleaned_data['author']
+            book = Book(title=title, description=description, year=year, author=author)
+            book.save()
+        return render(request,'books.html', {'form': form})
+    else:
+        form = BookForm()
+        return render(request, 'books.html', {'form': form})
+
+
+def registration(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password1']
+            user = User.objects.create_user(username=username, email=email, password=password)
+            user.save()
+        return render(request, 'registration.html', context={'form': form})
+    else:
+        form = RegistrationForm()
+        return render(request, 'registration.html', context={'form': form})
+
+
+def login1(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password1']
+            user = authenticate(request, username=username,  password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                return redirect('login')
+    else:
+        form = LoginForm()
+        return render(request, 'login.html', context={'form': form})
