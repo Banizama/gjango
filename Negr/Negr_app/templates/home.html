@@ -29,5 +29,8 @@
 <!--        </div>-->
 <!--    </div>-->
     {{ username }}
+    {% for i in projects %}
+        <a href="/project/{{ i.id }}">{{ i.name }}</a>
+    {% endfor %}
 </body>
 </html>
