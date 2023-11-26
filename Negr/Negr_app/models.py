@@ -35,10 +35,6 @@ class Task(Abstract):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 
-
-
-
-
 class Student_group(models.Model):
     class_number = models.IntegerField()
 
