@@ -1,20 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-url="/project/{{ project.id }}/">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/static/js/create_task.js"></script>
 </head>
 <body>
     {{ project.name }}
-    <form method="post">
+
         {% csrf_token %}
-        {% for i in tasks %}
-            {{ i.name }}-{{ i.priority }}-{{ i.status }}-{{ i.deadline }}
+        {% for i in task %}
+            <div id="task_info{{ i.id }}">
+            <span>{{ i.name }}-{{ i.priority }}-{{ i.status }}-{{ i.deadline }}</span>-<button id="{{ i.id }}" data-url="/project/{{ project.id }}/" class="edit_task">Edit</button>
+            <p id="form{{ i.id }}"></p><br>
+            </div>
         {% endfor %}
+
         <table>
             {{ form.as_table }}
         </table>
-        <input type="submit" value="Create Task">
-    </form>
+        <button id="btn" >Create Task</button>
+        <p id="resp" ></p>
+
 </body>
+
 </html>

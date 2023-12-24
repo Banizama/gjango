@@ -53,6 +53,8 @@ class ProjectForm(forms.ModelForm):
         model = Project
         fields = ['name']
 
+class ChangeProjectForm(forms.Form):
+    name = forms.CharField()
 
 
 class TaskForm(forms.ModelForm):

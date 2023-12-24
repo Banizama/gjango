@@ -35,6 +35,10 @@ class Task(Abstract):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 
+
+
+
+
 class Student_group(models.Model):
     class_number = models.IntegerField()
 
@@ -65,5 +69,6 @@ class Process_of_taking_a_book(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
 
-
+class Image(models.Model):
+    image = models.ImageField(upload_to='static/images')
 

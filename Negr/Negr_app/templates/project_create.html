@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="/static/js/create_project.js"></script>
 </head>
 <body>
-    <form method="post">
         {% csrf_token %}
         <table>
-        {{ name.as_table }}
+            {{ form.as_table }}
         </table>
-        <input type="submit" value="Create">
-    </form>
-
+        <button id="btn">Create</button>
+        <h1 id="resp"></h1>
 </body>
 </html>

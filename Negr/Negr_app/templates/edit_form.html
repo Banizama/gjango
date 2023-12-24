@@ -1,0 +1,12 @@
+<!--<script src="/static/js/edit_task.js"></script>-->
+<div class="form">
+    <span>Name:</span><input type="text" id="text_id" value="{{ task.name }}">
+    {% if task.status %}
+        <span>Status:</span><input type="checkbox" id="status_id" checked>
+    {% else %}
+        <span>Status:</span><input type="checkbox" id="status_id">
+    {% endif %}
+    <span>Deadline:</span><input type="text" id="deadline_id" value="{{ date }}">
+    <span>Priority:</span><input type="number" id="priority_id" value="{{ task.priority }}">
+<button data-id="{{ task.id }}" id="apply_changes" onclick="edit_task()">Edit Task Info</button>>
+</div>

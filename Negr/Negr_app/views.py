@@ -1,110 +1,132 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
-# from .models import Directors, Films, Book
 from .models import Project, Task
-from .forms import ProjectForm, TaskForm
-from .forms import  RegistrationForm, LoginForm
+from django.urls import reverse_lazy
+from django.template.loader import render_to_string
+from .forms import ProjectForm, TaskForm, RegistrationForm, LoginForm
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.views.generic.list import ListView
+from django.views.generic.edit import CreateView
+from django.contrib.auth.views import LoginView, LogoutView
+from django.views.generic import TemplateView
+from django.http import HttpResponse, JsonResponse
 
 
-def home(request):
-    user = request.user
-    projects = Project.objects.all()
-    context = {'username': user, 'projects': projects}
-    return render(request, 'home.html', context)
+class TestPage(TemplateView):
+    template_name = 'test.html'
+
+    def post(self, request):
+        data = request.POST
+        return JsonResponse({'resp': data['text']}, safe=False)
 
 
-def project(request, **kwargs):
-    project = Project.objects.get(id=kwargs['id'])
-    # tasks = Task.objects.filter(project=project.id)
-    if request.method == 'POST':
-        form = TaskForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            priority = form.cleaned_data['priority']
-            deadline = form.cleaned_data['deadline']
-            status = form.cleaned_data['status']
-            task = Task(name=name, priority=priority, deadline=deadline, project=project, status=status)
-            task.save()
-            return redirect(f'/')
-    else:
-        form = TaskForm()
-        tasks = Task.objects.filter(project=project)
-        return render(request, 'project_page.html', {'project': project, 'tasks': tasks, 'form': form})
+class HomeView(ListView):
+    model = Project
+    paginate_by = 2
+    template_name = 'home.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = ProjectForm()
+        context['projects'] = Project.objects.all()
+        return context
 
 
-def project_create(request):
-    if request.method == 'POST':
-        form = ProjectForm(request.POST)
-        if form.is_valid():
-            name = form.cleaned_data['name']
-            project = Project(name=name)
-            project.save()
-            return redirect('/')
-    else:
-        form = ProjectForm()
-        context = {'name': form}
-        return render(request, 'project_create.html', context)
-
-# def about(request):
-#     context = {'first_name': 'Nazar', 'second_name': 'Ovsienko', 'age': 17, 'city': 'Kyiv'}
-#     return render(request, 'aboutMe.html', context)
-#
-#
-# def page1(request):
+# def project(request, **kwargs):
+#     project = Project.objects.get(id=kwargs['id'])
+#     # tasks = Task.objects.filter(project=project.id)
 #     if request.method == 'POST':
+#         form = TaskForm(request.POST)
+#         if form.is_valid():
+#             name = form.cleaned_data['name']
+#             priority = form.cleaned_data['priority']
+#             deadline = form.cleaned_data['deadline']
+#             status = form.cleaned_data['status']
+#             task = Task(name=name, priority=priority, deadline=deadline, project=project, status=status)
+#             task.save()
+#             return redirect(f'/')
+#     else:
+#         form = TaskForm()
+#         tasks = Task.objects.filter(project=project)
+#         return render(request, 'project_page.html', {'project': project, 'tasks': tasks, 'form': form})
+
+
+class ProjectCreate(TemplateView):
+    template_name = 'project_create.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = ProjectForm()
+        return context
+
+    def post(self, request):
+        data = request.POST
+        project = Project(name=data['id_name'])
+        project.save()
+        print(data)
+        return JsonResponse({'resp': data['id_name']}, safe=False)
+
+
+# class TaskPage(TemplateView):
+#     template_name = 'task_page.html'
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         task = Task.objects.get(id=self.kwargs['id'])
+#         context['form'] = TaskForm(initial={'name': task.name, 'status': task.status, 'deadline': task.deadline,
+#                                             'priority': task.priority})
+#         context['task'] = task
+#         return context
+#
+#     def post(self, request, **kwargs):
 #         data = request.POST
-#         name = data['name']
-#         surname = data['surname']
-#         age = data['age']
-#         director = Directors(first_name=name, second_name=surname, age=age)
-#         director.save()
-#     return render(request, 'page1.html')
-#
-#
-# def page2(request):
-#     dirs = Directors.objects.all()
-#     return render(request, 'page2.html', {'data': dirs})
-#
-#
-# def page3(request):
-#     if request.method == 'POST':
-#         form = FilmForm1(request.POST)
-#         if form.is_valid():
-#             title = form.cleaned_data['title']
-#             year = form.cleaned_data['year']
-#             genre = form.cleaned_data['genre']
-#             # poster = form.cleaned_data['poster']
-#             dir = Directors.objects.get(id=1)
-#             film = Films(title=title, year=year, genre=genre, director=dir)
-#             film.save()
-#         return render(request, 'page3.html', {'form': form})
-#     else:
-#         form = FilmForm1()
-#         return render(request, 'page3.html', {'form': form})
-#
-#
-# def films(request):
-#     film = Films.objects.all()
-#     return render(request, 'films.html', {'films': film})
-#
-#
-# def books(request):
-#     if request.method == 'POST':
-#         form = BookForm(request.POST)
-#         if form.is_valid():
-#             title = form.cleaned_data['title']
-#             description = form.cleaned_data['description']
-#             year = form.cleaned_data['year']
-#             author = form.cleaned_data['author']
-#             book = Book(title=title, description=description, year=year, author=author)
-#             book.save()
-#         return render(request,'books.html', {'form': form})
-#     else:
-#         form = BookForm()
-#         return render(request, 'books.html', {'form': form})
-#
+#         task = Task(name=data['id_name'], status=True if data['id_status'] == 'on' else False,
+#                                deadline=data['id_deadline'], priority=data['id_priority'], project_id=self.kwargs['id'])
+#         task.save()
+#         print(data)
+#         resp = render_to_string('task.html', {'task': task})
+#         return JsonResponse(resp, safe=False)
+
+
+class ProjectPage(TemplateView):
+    template_name = 'project_page.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        project = Project.objects.get(id=self.kwargs['id'])
+        task = Task.objects.filter(project=project)
+        context['project'] = project
+        context['task'] = task
+        context['form'] = TaskForm()
+        return context
+
+    def post(self, request, **kwargs):
+        data = request.POST
+        print(data)
+        if len(data.keys()) == 5:
+            task = Task(name=data['id_name'], status=True if data['id_status'] == 'on' else False, deadline=data['id_deadline'], priority=data['id_priority'], project_id=self.kwargs['id'])
+            task.save()
+            print(data)
+            resp = render_to_string('task.html', {'task': task})
+            return JsonResponse(resp, safe=False)
+
+        elif 'id' in data.keys():
+            task = Task.objects.get(id=int(data['id']))
+            resp = render_to_string('edit_form.html',{'task': task, 'date': task.deadline.strftime('%Y-%m-%d %H:%M')})
+            return JsonResponse(resp, safe=False)
+
+        elif 'id_change_name' in data.keys():
+            task = Task.objects.get(id=int(data['task']))
+            task.name = data['id_change_name']
+
+            task.status = True if data['id_change_status'] == 'on' else False
+            task.deadline = data['id_change_deadline']
+            task.priority = data['id_change_priority']
+            task.save()
+
+            resp = render_to_string('task.html', {'task': task})
+            return JsonResponse(resp, safe=False)
+
 
 def registration(request):
     if request.method == 'POST':
@@ -136,5 +158,4 @@ def login1(request):
     else:
         form = LoginForm()
         return render(request, 'login.html', context={'form': form})
-
 

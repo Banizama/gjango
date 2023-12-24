@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title>
-</head>
-<body style="margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            background-color: #F5F5DC;">
+{% extends 'base.html' %}
+{% block content %}
 <!--    <header style="background-color: grey;  width: 100%; height: 150px; position: absolute;">-->
 <!--        <span style="color: white; font-size: 50px; left: 5px;"><b>GoITeens Shop</b></span>-->
 <!--        <div style=" width: 50%; top: 10px; position: relative; text-align: right; float: right; margin-right:20px;">-->
@@ -30,7 +22,8 @@
 <!--    </div>-->
     {{ username }}
     {% for i in projects %}
-        <a href="/project/{{ i.id }}">{{ i.name }}</a>
-    {% endfor %}
-</body>
-</html>
+        <a href="/project/{{ i.id }}">{{ i.name }}</a>-<a href="/change_project/{{ i.id }}"> Change {{ i.name }}</a><br>
+    {% endfor %}<br>
+<a href="/logout">Logout</a>
+<a href="/user_page">User Page</a>
+{% endblock %}
